@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -11,7 +12,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $posts = Post::latest()->get();
+        return view('index', compact('posts'));
     }
 
     /**
@@ -19,7 +21,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('post_create');
     }
 
     /**
@@ -27,7 +29,15 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'category' => 'required',
+            'images' => 'required',
+            'content' => 'required',
+            'published' => 'required',
+        ]);
+        Post::create($request->all());
+        return redirect()->route('post.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
     /**
@@ -35,7 +45,8 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        return view('post_detail', compact('post'));
     }
 
     /**
@@ -43,7 +54,8 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        return view('post_edit', compact('post'));
     }
 
     /**
@@ -51,7 +63,23 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'category' => 'required',
+            'images' => 'required',
+            'content' => 'required',
+            'published' => 'required',
+        ]);
+
+        $post = Post::findOrFail($id);
+        $post->title = $request->get('title');
+        $post->category = $request->get('category');
+        $post->images = $request->get('images');
+        $post->content = $request->get('content');
+        $post->published = $request->get('published');
+        $post->save();
+
+        return redirect()->route('post.index')->with('success', 'Data berhasil diubah!');
     }
 
     /**
@@ -59,6 +87,8 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->delete();
+        return redirect('/post')->with('success', 'Data berhasil dihapus!');
     }
 }

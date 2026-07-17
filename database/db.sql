@@ -1,9 +1,4 @@
-TRUNCATE TABLE posts;
-
-ALTER TABLE posts
-ADD COLUMN images VARCHAR(255) NOT NULL
-ADD COLUMN category VARCHAR(50) NOT NULL,
-ADD COLUMN comments INT DEFAULT 0;
+use dblaravel;
 
 INSERT INTO posts (id, title, images, category, content, comments, published, created_at, updated_at)
 VALUES (

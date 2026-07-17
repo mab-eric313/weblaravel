@@ -26,3 +26,5 @@ Route::middleware('auth')->group(function () {
         return view('home');
     });
 });
+
+Route::resource('post', PostController::class);
